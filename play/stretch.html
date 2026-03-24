@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>스트레칭</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#f5f7fb;
+text-align:center;
+padding:60px;
+}
+
+h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+#stretchName{
+font-size:26px;
+margin-top:20px;
+font-weight:bold;
+}
+
+#desc{
+margin-top:10px;
+color:#555;
+}
+
+#timer{
+font-size:40px;
+margin-top:10px;
+}
+
+img{
+width:250px;
+margin-top:20px;
+border-radius:10px;
+}
+
+button{
+margin-top:20px;
+padding:12px 24px;
+font-size:16px;
+border:none;
+border-radius:8px;
+background:#4caf50;
+color:white;
+cursor:pointer;
+margin-right:10px;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+</style>
+</head>
+<body>
+
+<h1>🧘 스트레칭 루틴</h1>
+<p>잠시 컴퓨터나 핸드폰에서 눈을 떼고 따라하세요</p>
+
+<div id="stretchName"></div>
+<div id="desc"></div>
+
+<img id="stretchGif">
+
+<div id="timer">10</div>
+
+<br>
+
+<button onclick="startRoutine()">시작</button>
+<button onclick="pauseRoutine()">일시정지</button>
+
+<script>
+
+const stretches = [
+
+{
+name:"목 스트레칭",
+desc:"목을 천천히 좌우로 돌리기",
+gif:"https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif"
+},
+
+{
+name:"어깨 스트레칭",
+desc:"어깨 크게 돌리기",
+gif:"https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif"
+},
+
+{
+name:"허리 스트레칭",
+desc:"자리에서 일어나 허리 펴기",
+gif:"https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif"
+},
+
+{
+name:"손목 스트레칭",
+desc:"손목 천천히 돌리기",
+gif:"https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif"
+},
+
+{
+name:"기지개",
+desc:"팔을 위로 올리고 기지개 켜기",
+gif:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+},
+
+{
+name:"눈 휴식",
+desc:"눈을 감고 잠시 쉬세요",
+gif:"https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
+}
+
+];
+
+let current = 0;
+let time = 10;
+let interval;
+
+function showStretch(){
+
+const s = stretches[current];
+
+document.getElementById("stretchName").innerText = s.name;
+document.getElementById("desc").innerText = s.desc;
+document.getElementById("stretchGif").src = s.gif;
+
+time = 10;
+
+updateTimer();
+
+}
+
+function updateTimer(){
+
+document.getElementById("timer").innerText = time;
+
+}
+
+function nextStretch(){
+
+current++;
+
+if(current >= stretches.length){
+
+current = 0; // 루틴 반복
+
+}
+
+showStretch();
+
+}
+
+function startRoutine(){
+
+clearInterval(interval);
+
+interval = setInterval(()=>{
+
+time--;
+
+updateTimer();
+
+if(time <= 0){
+
+nextStretch();
+
+}
+
+},1000);
+
+}
+
+function pauseRoutine(){
+
+clearInterval(interval);
+
+}
+
+showStretch();
+
+</script>
+
+</body>
+</html>

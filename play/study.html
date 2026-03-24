@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>순공시간 체크</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#0d1117;
+color:white;
+padding:40px;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+#calendar{
+display:grid;
+grid-template-columns: repeat(53, 14px);
+grid-auto-rows:14px;
+gap:4px;
+}
+
+.day{
+width:14px;
+height:14px;
+background:#161b22;
+border-radius:2px;
+}
+
+.level1{ background:#0e4429 }
+.level2{ background:#006d32 }
+.level3{ background:#26a641 }
+.level4{ background:#39d353 }
+
+.tooltip{
+position:fixed;
+background:#161b22;
+padding:6px 10px;
+border-radius:6px;
+font-size:12px;
+pointer-events:none;
+opacity:0;
+}
+
+</style>
+</head>
+<body>
+
+<h1>📚 공부 잔디</h1>
+
+<div id="calendar"></div>
+
+<div id="tooltip" class="tooltip"></div>
+
+<script>
+
+const calendar = document.getElementById("calendar");
+const tooltip = document.getElementById("tooltip");
+
+const today = new Date();
+const start = new Date(today);
+start.setFullYear(today.getFullYear()-1);
+
+// 날짜 포맷
+function formatDate(date){
+return date.toISOString().split("T")[0];
+}
+
+// 공부시간 가져오기
+function getStudy(date){
+
+const data = localStorage.getItem("study-"+date);
+
+return data ? parseInt(data) : 0;
+
+}
+
+// 색상 레벨
+function getLevel(seconds){
+
+const min = seconds/60;
+
+if(min === 0) return 0;
+if(min < 30) return 1;
+if(min < 60) return 2;
+if(min < 120) return 3;
+
+return 4;
+
+}
+
+// 캘린더 생성
+for(let d = new Date(start); d <= today; d.setDate(d.getDate()+1)){
+
+const dateStr = formatDate(d);
+
+const study = getStudy(dateStr);
+
+const level = getLevel(study);
+
+const day = document.createElement("div");
+
+day.className = "day";
+
+if(level > 0){
+day.classList.add("level"+level);
+}
+
+// tooltip
+day.addEventListener("mousemove",(e)=>{
+
+tooltip.style.opacity=1;
+
+const minutes = Math.floor(study/60);
+
+tooltip.innerText =
+dateStr+" - "+minutes+"분 공부";
+
+tooltip.style.left = e.pageX+10+"px";
+tooltip.style.top = e.pageY+10+"px";
+
+});
+
+day.addEventListener("mouseleave",()=>{
+
+tooltip.style.opacity=0;
+
+});
+
+calendar.appendChild(day);
+
+}
+
+</script>
+
+</body>
+</html>
