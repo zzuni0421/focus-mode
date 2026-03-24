@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer</title>
+
+<style>
+body{
+margin:0;
+font-family:Pretendard,sans-serif;
+background:#f4f6fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+background:white;
+padding:40px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+text-align:center;
+width:380px;
+}
+
+.titleInput{
+width:100%;
+padding:8px;
+border-radius:8px;
+border:1px solid #ddd;
+margin-bottom:10px;
+}
+
+.timeDisplay{
+font-size:48px;
+font-weight:bold;
+margin:20px 0;
+}
+
+.inputs{
+display:flex;
+justify-content:center;
+gap:6px;
+margin-bottom:10px;
+}
+
+.inputs input{
+width:60px;
+padding:6px;
+text-align:center;
+border-radius:6px;
+border:1px solid #ddd;
+}
+
+.quick{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+justify-content:center;
+margin-bottom:15px;
+}
+
+.quick button{
+padding:6px 10px;
+border:none;
+border-radius:8px;
+background:#e5e7eb;
+cursor:pointer;
+}
+
+.controls{
+display:flex;
+gap:10px;
+justify-content:center;
+}
+
+.controls button{
+padding:8px 14px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+}
+
+.controls button:hover{
+background:#2563eb;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>⏳ 타이머</h2>
+
+<input class="titleInput" id="title" placeholder="타이머 제목">
+
+<div class="inputs">
+<input id="h" type="number" placeholder="시">
+<input id="m" type="number" placeholder="분">
+<input id="s" type="number" placeholder="초">
+</div>
+
+<div class="quick">
+
+<button onclick="setTime(60)">1분</button>
+<button onclick="setTime(120)">2분</button>
+<button onclick="setTime(180)">3분</button>
+<button onclick="setTime(300)">5분</button>
+<button onclick="setTime(600)">10분</button>
+<button onclick="setTime(900)">15분</button>
+<button onclick="setTime(1200)">20분</button>
+<button onclick="setTime(1800)">30분</button>
+<button onclick="setTime(3600)">1시간</button>
+
+</div>
+
+<div class="timeDisplay" id="time">00:00:00</div>
+
+<div class="controls">
+<button onclick="start()">시작</button>
+<button onclick="pause()">일시정지</button>
+<button onclick="reset()">리셋</button>
+</div>
+
+</div>
+
+<script>
+
+let total=0;
+let timer=null;
+
+const display=document.getElementById("time");
+
+function format(t){
+
+let h=Math.floor(t/3600);
+let m=Math.floor((t%3600)/60);
+let s=t%60;
+
+return String(h).padStart(2,"0")+":"+
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0");
+
+}
+
+function update(){
+display.innerText=format(total);
+}
+
+function setTime(sec){
+total=sec;
+update();
+}
+
+function readInput(){
+
+const h=parseInt(document.getElementById("h").value)||0;
+const m=parseInt(document.getElementById("m").value)||0;
+const s=parseInt(document.getElementById("s").value)||0;
+
+total=h*3600+m*60+s;
+
+update();
+
+}
+
+document.getElementById("h").addEventListener("change",readInput);
+document.getElementById("m").addEventListener("change",readInput);
+document.getElementById("s").addEventListener("change",readInput);
+
+function start(){
+
+if(total<=0) return;
+
+if(timer) return;
+
+timer=setInterval(()=>{
+
+total--;
+update();
+
+localStorage.setItem("timer-time",total);
+
+if(total<=0){
+
+clearInterval(timer);
+timer=null;
+alert("⏰ 타이머 종료!");
+
+}
+
+},1000);
+
+}
+
+function pause(){
+clearInterval(timer);
+timer=null;
+}
+
+function reset(){
+pause();
+total=0;
+update();
+localStorage.removeItem("timer-time");
+}
+
+const saved=localStorage.getItem("timer-time");
+
+if(saved){
+total=parseInt(saved);
+update();
+}
+
+</script>
+
+</body>
+</html>

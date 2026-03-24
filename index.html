@@ -1,0 +1,85 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus Mode</title>
+
+<style>
+body{
+    margin:0;
+    font-family: "Pretendard", sans-serif;
+    background: linear-gradient(135deg,#6dd5ed,#2193b0);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    text-align:center;
+    width:320px;
+}
+
+h1{
+    margin-bottom:30px;
+}
+
+.menu{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+button{
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    background:#2193b0;
+    color:white;
+    transition:0.2s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    background:#176d82;
+}
+
+.footer{
+    margin-top:25px;
+    font-size:12px;
+    color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📊 Focus Mode</h1>
+
+<div class="menu">
+<button onclick="goDiary()">📓 일기</button>
+<button onclick="goTimer()">⏱ 타이머</button>
+<button onclick="goStopwatch()">⏲ 스톱워치</button>
+<button onclick="goStudy()">📈 순공 체크</button>
+<button onclick="goStretch()">🧘 스트레칭</button>
+</div>
+
+<div class="footer">
+2026 Focus Mode
+</div>
+
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>

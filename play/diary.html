@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diary Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+font-family:Pretendard,sans-serif;
+margin:0;
+background:#f4f6fb;
+}
+
+.dark{
+background:#111;
+color:white;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+h2{
+margin-top:40px;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:10px;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.top{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+select,input{
+padding:8px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+button{
+padding:8px 14px;
+border:none;
+border-radius:8px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(20,12px);
+gap:4px;
+margin-top:10px;
+}
+
+.day{
+width:12px;
+height:12px;
+background:#ddd;
+}
+
+.day.active{
+background:#22c55e;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fill,100px);
+gap:10px;
+}
+
+.gallery img{
+width:100px;
+height:100px;
+object-fit:cover;
+border-radius:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📓 다이어리 대시보드</h1>
+
+<button onclick="toggleDark()">🌙 다크모드</button>
+
+<h2>✏️ 오늘 기록</h2>
+
+<div class="top">
+<input type="date" id="date">
+<select id="weather">
+<option>☀️</option>
+<option>🌧</option>
+<option>⛅</option>
+</select>
+
+<select id="mood">
+<option>😀</option>
+<option>🙂</option>
+<option>😐</option>
+<option>😢</option>
+</select>
+</div>
+
+<textarea id="content" placeholder="오늘 있었던 일"></textarea>
+
+<input type="file" id="photos" multiple>
+
+<button onclick="saveDiary()">저장</button>
+
+<h2>🔥 연속 기록</h2>
+<div id="streak">0일</div>
+
+<h2>📅 기록 히트맵</h2>
+<div class="grid" id="heatmap"></div>
+
+<h2>🔍 일기 검색</h2>
+<input id="search" placeholder="검색어">
+<div id="results"></div>
+
+<h2>📊 기분 통계</h2>
+<canvas id="moodChart"></canvas>
+
+<h2>📷 사진 갤러리</h2>
+<div class="gallery" id="gallery"></div>
+
+<h2>🎲 랜덤 과거 일기</h2>
+<button onclick="randomDiary()">랜덤 보기</button>
+<div id="random"></div>
+
+<h2>💾 백업</h2>
+<button onclick="download()">데이터 다운로드</button>
+<input type="file" id="upload">
+
+</div>
+
+<script>
+
+const dateInput=document.getElementById("date");
+dateInput.valueAsDate=new Date();
+
+function key(){return "diary-"+dateInput.value}
+
+function saveDiary(){
+
+const files=[...document.getElementById("photos").files];
+
+const readerPromises=files.map(file=>new Promise(res=>{
+const r=new FileReader();
+r.onload=e=>res(e.target.result);
+r.readAsDataURL(file);
+}));
+
+Promise.all(readerPromises).then(imgs=>{
+
+const data={
+content:document.getElementById("content").value,
+weather:document.getElementById("weather").value,
+mood:document.getElementById("mood").value,
+photos:imgs
+};
+
+localStorage.setItem(key(),JSON.stringify(data));
+
+renderAll();
+
+});
+
+}
+
+function loadAll(){
+
+const keys=Object.keys(localStorage).filter(k=>k.startsWith("diary-"));
+return keys.map(k=>JSON.parse(localStorage.getItem(k)));
+
+}
+
+function renderHeatmap(){
+
+const el=document.getElementById("heatmap");
+el.innerHTML="";
+
+const keys=Object.keys(localStorage).filter(k=>k.startsWith("diary-"));
+
+for(let i=0;i<365;i++){
+
+const d=document.createElement("div");
+d.className="day";
+
+const date=new Date();
+date.setDate(date.getDate()-i);
+
+const key="diary-"+date.toISOString().slice(0,10);
+
+if(localStorage.getItem(key)) d.classList.add("active");
+
+el.appendChild(d);
+
+}
+
+}
+
+function renderGallery(){
+
+const el=document.getElementById("gallery");
+el.innerHTML="";
+
+loadAll().forEach(d=>{
+(d.photos||[]).forEach(p=>{
+const img=document.createElement("img");
+img.src=p;
+el.appendChild(img);
+});
+});
+
+}
+
+function renderChart(){
+
+const moods={"😀":0,"🙂":0,"😐":0,"😢":0};
+
+loadAll().forEach(d=>moods[d.mood]++);
+
+new Chart(document.getElementById("moodChart"),{
+type:"bar",
+data:{
+labels:Object.keys(moods),
+datasets:[{data:Object.values(moods)}]
+}
+});
+
+}
+
+function renderSearch(){
+
+const q=document.getElementById("search").value;
+
+const res=document.getElementById("results");
+res.innerHTML="";
+
+Object.keys(localStorage).forEach(k=>{
+
+if(!k.startsWith("diary-")) return;
+
+const d=JSON.parse(localStorage.getItem(k));
+
+if(d.content.includes(q)){
+
+const div=document.createElement("div");
+div.innerText=k+" "+d.content.slice(0,20);
+
+res.appendChild(div);
+
+}
+
+});
+
+}
+
+document.getElementById("search").addEventListener("input",renderSearch);
+
+function randomDiary(){
+
+const keys=Object.keys(localStorage).filter(k=>k.startsWith("diary-"));
+
+if(!keys.length) return;
+
+const r=keys[Math.floor(Math.random()*keys.length)];
+
+const d=JSON.parse(localStorage.getItem(r));
+
+document.getElementById("random").innerText=d.content;
+
+}
+
+function download(){
+
+const data=JSON.stringify(localStorage);
+
+const a=document.createElement("a");
+
+a.href="data:text/json;charset=utf-8,"+encodeURIComponent(data);
+
+a.download="diary-backup.json";
+
+a.click();
+
+}
+
+document.getElementById("upload").addEventListener("change",e=>{
+
+const file=e.target.files[0];
+
+const r=new FileReader();
+
+r.onload=function(ev){
+
+const data=JSON.parse(ev.target.result);
+
+for(let k in data) localStorage.setItem(k,data[k]);
+
+renderAll();
+
+}
+
+r.readAsText(file);
+
+});
+
+function toggleDark(){
+document.body.classList.toggle("dark");
+}
+
+function renderAll(){
+renderHeatmap();
+renderGallery();
+renderChart();
+}
+
+renderAll();
+
+</script>
+
+</body>
+</html>

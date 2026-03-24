@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스톱워치 ( 별 기능 없음 주의 )</title>
+
+<style>
+body{
+margin:0;
+font-family:Pretendard,sans-serif;
+background:#f3f6fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+background:white;
+padding:40px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+text-align:center;
+width:360px;
+}
+
+.time{
+font-size:48px;
+font-weight:bold;
+margin-bottom:20px;
+letter-spacing:2px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+justify-content:center;
+margin-bottom:20px;
+}
+
+button{
+padding:10px 16px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+font-size:14px;
+}
+
+button:hover{
+background:#2563eb;
+}
+
+.laps{
+max-height:200px;
+overflow:auto;
+text-align:left;
+font-size:14px;
+border-top:1px solid #eee;
+padding-top:10px;
+}
+
+.lap{
+padding:4px 0;
+border-bottom:1px solid #f0f0f0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>⏱ 스톱워치</h2>
+
+<div class="time" id="time">00:00:00.000</div>
+
+<div class="buttons">
+<button onclick="toggle()">시작 / 정지</button>
+<button onclick="lap()">랩</button>
+<button onclick="reset()">리셋</button>
+</div>
+
+<div class="laps" id="laps"></div>
+
+</div>
+
+<script>
+
+let startTime=0;
+let elapsed=0;
+let timer=null;
+
+const display=document.getElementById("time");
+
+function format(ms){
+
+let h=Math.floor(ms/3600000);
+let m=Math.floor((ms%3600000)/60000);
+let s=Math.floor((ms%60000)/1000);
+let msr=ms%1000;
+
+return String(h).padStart(2,"0")+":"+
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0")+"."+
+String(msr).padStart(3,"0");
+
+}
+
+function update(){
+
+elapsed=Date.now()-startTime;
+
+display.innerText=format(elapsed);
+
+localStorage.setItem("stopwatch-time",elapsed);
+
+}
+
+function toggle(){
+
+if(timer){
+
+clearInterval(timer);
+timer=null;
+return;
+
+}
+
+startTime=Date.now()-elapsed;
+
+timer=setInterval(update,10);
+
+}
+
+function reset(){
+
+clearInterval(timer);
+timer=null;
+elapsed=0;
+display.innerText="00:00:00.000";
+document.getElementById("laps").innerHTML="";
+localStorage.removeItem("stopwatch-time");
+
+}
+
+function lap(){
+
+const div=document.createElement("div");
+div.className="lap";
+div.innerText=format(elapsed);
+document.getElementById("laps").prepend(div);
+
+}
+
+document.addEventListener("keydown",e=>{
+
+if(e.code==="Space"){
+e.preventDefault();
+toggle();
+}
+
+if(e.key==="l") lap();
+
+if(e.key==="r") reset();
+
+});
+
+const saved=localStorage.getItem("stopwatch-time");
+
+if(saved){
+elapsed=parseInt(saved);
+display.innerText=format(elapsed);
+}
+
+</script>
+
+</body>
+</html>
