@@ -10,10 +10,6 @@ function goStopwatch(){
     window.location.href = "play/stopwatch.html";
 }
 
-function goStudy(){
-    window.location.href = "play/study.html";
-}
-
 function goStretch(){
     window.location.href = "play/stretch.html";
 }
