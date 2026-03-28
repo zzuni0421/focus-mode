@@ -1,19 +1,19 @@
 function goDiary(){
-    window.location.href = "diary.html";
+    window.location.href = "play/diary.html";
 }
 
 function goTimer(){
-    window.location.href = "timer.html";
+    window.location.href = "play/timer.html";
 }
 
 function goStopwatch(){
-    window.location.href = "stopwatch.html";
+    window.location.href = "play/stopwatch.html";
 }
 
 function goStudy(){
-    window.location.href = "study.html";
+    window.location.href = "play/study.html";
 }
 
 function goStretch(){
-    window.location.href = "stretch.html";
+    window.location.href = "play/stretch.html";
 }
