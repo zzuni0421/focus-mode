@@ -9,62 +9,97 @@
 body{
 margin:0;
 font-family:Pretendard,sans-serif;
-background:#f3f6fb;
+background:linear-gradient(135deg,#ffb6d9,#ffd6ec,#ffeaf5);
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 }
 
+/* 메인 카드 */
+
 .container{
-background:white;
-padding:40px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(12px);
+padding:45px;
+border-radius:28px;
+box-shadow:0 15px 40px rgba(255,120,170,0.25);
 text-align:center;
-width:360px;
+width:380px;
+border:1px solid rgba(255,255,255,0.5);
 }
 
+/* 시간 */
+
 .time{
-font-size:48px;
-font-weight:bold;
-margin-bottom:20px;
+font-size:64px;
+font-weight:700;
+margin-bottom:25px;
 letter-spacing:2px;
+color:#ff2d95;
 }
+
+/* 버튼 영역 */
 
 .buttons{
 display:flex;
-gap:10px;
+gap:12px;
 justify-content:center;
-margin-bottom:20px;
+margin-bottom:22px;
 }
 
+/* 버튼 */
+
 button{
-padding:10px 16px;
+padding:10px 18px;
 border:none;
-border-radius:10px;
-background:#3b82f6;
+border-radius:14px;
+background:linear-gradient(135deg,#ff5cb8,#ff2d95);
 color:white;
 cursor:pointer;
 font-size:14px;
+font-weight:600;
+transition:0.2s;
+box-shadow:0 6px 15px rgba(255,80,150,0.3);
 }
 
 button:hover{
-background:#2563eb;
+transform:translateY(-2px) scale(1.05);
+box-shadow:0 10px 20px rgba(255,80,150,0.4);
 }
+
+button:active{
+transform:scale(0.95);
+}
+
+/* 랩 기록 */
 
 .laps{
 max-height:200px;
 overflow:auto;
 text-align:left;
 font-size:14px;
-border-top:1px solid #eee;
-padding-top:10px;
+border-top:1px solid rgba(255,180,210,0.4);
+padding-top:12px;
 }
 
+/* 개별 랩 */
+
 .lap{
-padding:4px 0;
-border-bottom:1px solid #f0f0f0;
+padding:6px 0;
+border-bottom:1px solid rgba(255,200,220,0.4);
+color:#555;
+}
+
+/* 스크롤바 */
+
+.laps::-webkit-scrollbar{
+width:6px;
+}
+
+.laps::-webkit-scrollbar-thumb{
+background:#ffc1e3;
+border-radius:10px;
 }
 </style>
 </head>
