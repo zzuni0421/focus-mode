@@ -3,89 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diary Dashboard</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Namul Diary</title>
 
 <style>
-body{
-font-family:Pretendard,sans-serif;
+
+*{
+box-sizing:border-box;
 margin:0;
-background:#f4f6fb;
+padding:0;
+font-family:"Pretendard",sans-serif;
 }
 
-.dark{
-background:#111;
-color:white;
+body{
+background:linear-gradient(135deg,#ffb6d9,#ffd1ec,#ffe9f6);
+min-height:100vh;
+padding:40px;
+display:flex;
+justify-content:center;
 }
 
 .container{
-max-width:1100px;
-margin:auto;
-padding:20px;
+width:900px;
 }
 
-h2{
-margin-top:40px;
+header{
+margin-bottom:30px;
+}
+
+header h1{
+font-size:38px;
+color:#ff2d95;
+}
+
+.card{
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(10px);
+padding:25px;
+border-radius:20px;
+margin-bottom:25px;
+box-shadow:0 10px 25px rgba(255,120,170,0.3);
+}
+
+.section-title{
+font-size:20px;
+margin-bottom:15px;
+color:#ff2d95;
+}
+
+.row{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+flex-wrap:wrap;
+}
+
+input,select{
+padding:10px;
+border-radius:10px;
+border:none;
+background:#fff;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
 
 textarea{
 width:100%;
-height:120px;
-padding:10px;
-border-radius:10px;
-border:1px solid #ddd;
-}
-
-.top{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-}
-
-select,input{
-padding:8px;
-border-radius:8px;
-border:1px solid #ddd;
+height:150px;
+padding:15px;
+border-radius:12px;
+border:none;
+resize:none;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
 
 button{
-padding:8px 14px;
-border:none;
-border-radius:8px;
-background:#3b82f6;
+background:linear-gradient(135deg,#ff5cb8,#ff2d95);
 color:white;
+border:none;
+padding:12px 18px;
+border-radius:12px;
+font-weight:600;
 cursor:pointer;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(20,12px);
-gap:4px;
 margin-top:10px;
 }
 
-.day{
-width:12px;
-height:12px;
-background:#ddd;
+button:hover{
+transform:scale(1.05);
 }
 
-.day.active{
-background:#22c55e;
-}
-
-.gallery{
-display:grid;
-grid-template-columns:repeat(auto-fill,100px);
+.preview{
+display:flex;
 gap:10px;
+flex-wrap:wrap;
+margin-top:10px;
 }
 
-.gallery img{
-width:100px;
-height:100px;
+.preview img{
+width:80px;
+height:80px;
 object-fit:cover;
-border-radius:8px;
+border-radius:10px;
+}
+
+.entries{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.entry{
+background:white;
+padding:15px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.entry-date{
+font-weight:bold;
+margin-bottom:5px;
+color:#ff2d95;
 }
 
 </style>
@@ -95,244 +130,150 @@ border-radius:8px;
 
 <div class="container">
 
-<h1>📓 다이어리 대시보드</h1>
+<header>
+<h1>Namul Diary</h1>
+</header>
 
-<button onclick="toggleDark()">🌙 다크모드</button>
+<div class="card">
 
-<h2>✏️ 오늘 기록</h2>
+<div class="section-title">✏️ 오늘 기록</div>
 
-<div class="top">
+<div class="row">
 <input type="date" id="date">
 <select id="weather">
 <option>☀️</option>
 <option>🌧</option>
 <option>⛅</option>
+<option>❄️</option>
 </select>
 
 <select id="mood">
 <option>😀</option>
-<option>🙂</option>
+<option>😊</option>
 <option>😐</option>
 <option>😢</option>
+<option>😡</option>
 </select>
 </div>
 
-<textarea id="content" placeholder="오늘 있었던 일"></textarea>
+<textarea id="content" placeholder="오늘 있었던 일을 기록하세요"></textarea>
 
 <input type="file" id="photos" multiple>
 
+<div class="preview" id="preview"></div>
+
 <button onclick="saveDiary()">저장</button>
 
-<h2>🔥 연속 기록</h2>
-<div id="streak">0일</div>
+</div>
 
-<h2>📅 기록 히트맵</h2>
-<div class="grid" id="heatmap"></div>
 
-<h2>🔍 일기 검색</h2>
-<input id="search" placeholder="검색어">
-<div id="results"></div>
+<div class="card">
 
-<h2>📊 기분 통계</h2>
-<canvas id="moodChart"></canvas>
+<div class="section-title">📚 이전 일기</div>
 
-<h2>📷 사진 갤러리</h2>
-<div class="gallery" id="gallery"></div>
+<div id="entries" class="entries"></div>
 
-<h2>🎲 랜덤 과거 일기</h2>
-<button onclick="randomDiary()">랜덤 보기</button>
-<div id="random"></div>
-
-<h2>💾 백업</h2>
-<button onclick="download()">데이터 다운로드</button>
-<input type="file" id="upload">
+</div>
 
 </div>
 
 <script>
 
-const dateInput=document.getElementById("date");
-dateInput.valueAsDate=new Date();
+let photosData=[]
 
-function key(){return "diary-"+dateInput.value}
+document.getElementById("date").value=new Date().toISOString().slice(0,10)
+
+document.getElementById("photos").addEventListener("change",function(){
+
+const preview=document.getElementById("preview")
+preview.innerHTML=""
+
+photosData=[]
+
+Array.from(this.files).forEach(file=>{
+
+const reader=new FileReader()
+
+reader.onload=function(e){
+
+photosData.push(e.target.result)
+
+const img=document.createElement("img")
+img.src=e.target.result
+preview.appendChild(img)
+
+}
+
+reader.readAsDataURL(file)
+
+})
+
+})
+
 
 function saveDiary(){
 
-const files=[...document.getElementById("photos").files];
+const date=document.getElementById("date").value
+const weather=document.getElementById("weather").value
+const mood=document.getElementById("mood").value
+const content=document.getElementById("content").value
 
-const readerPromises=files.map(file=>new Promise(res=>{
-const r=new FileReader();
-r.onload=e=>res(e.target.result);
-r.readAsDataURL(file);
-}));
+const entry={
+date,
+weather,
+mood,
+content,
+photos:photosData
+}
 
-Promise.all(readerPromises).then(imgs=>{
+let diaries=JSON.parse(localStorage.getItem("diaries")||"[]")
 
-const data={
-content:document.getElementById("content").value,
-weather:document.getElementById("weather").value,
-mood:document.getElementById("mood").value,
-photos:imgs
-};
+diaries.push(entry)
 
-localStorage.setItem(key(),JSON.stringify(data));
+localStorage.setItem("diaries",JSON.stringify(diaries))
 
-renderAll();
+loadEntries()
 
-});
+alert("저장 완료!")
 
 }
 
-function loadAll(){
 
-const keys=Object.keys(localStorage).filter(k=>k.startsWith("diary-"));
-return keys.map(k=>JSON.parse(localStorage.getItem(k)));
+function loadEntries(){
 
-}
+const container=document.getElementById("entries")
+container.innerHTML=""
 
-function renderHeatmap(){
+const diaries=JSON.parse(localStorage.getItem("diaries")||"[]").reverse()
 
-const el=document.getElementById("heatmap");
-el.innerHTML="";
+diaries.forEach(d=>{
 
-const keys=Object.keys(localStorage).filter(k=>k.startsWith("diary-"));
+const div=document.createElement("div")
+div.className="entry"
 
-for(let i=0;i<365;i++){
+let photosHTML=""
 
-const d=document.createElement("div");
-d.className="day";
+d.photos.forEach(p=>{
+photosHTML+=`<img src="${p}" style="width:60px;border-radius:8px;margin-right:5px">`
+})
 
-const date=new Date();
-date.setDate(date.getDate()-i);
+div.innerHTML=`
 
-const key="diary-"+date.toISOString().slice(0,10);
+<div class="entry-date">${d.date} ${d.weather} ${d.mood}</div>
 
-if(localStorage.getItem(key)) d.classList.add("active");
+<div>${d.content}</div>
 
-el.appendChild(d);
+<div>${photosHTML}</div>
 
-}
+`
 
-}
+container.appendChild(div)
 
-function renderGallery(){
-
-const el=document.getElementById("gallery");
-el.innerHTML="";
-
-loadAll().forEach(d=>{
-(d.photos||[]).forEach(p=>{
-const img=document.createElement("img");
-img.src=p;
-el.appendChild(img);
-});
-});
+})
 
 }
 
-function renderChart(){
-
-const moods={"😀":0,"🙂":0,"😐":0,"😢":0};
-
-loadAll().forEach(d=>moods[d.mood]++);
-
-new Chart(document.getElementById("moodChart"),{
-type:"bar",
-data:{
-labels:Object.keys(moods),
-datasets:[{data:Object.values(moods)}]
-}
-});
-
-}
-
-function renderSearch(){
-
-const q=document.getElementById("search").value;
-
-const res=document.getElementById("results");
-res.innerHTML="";
-
-Object.keys(localStorage).forEach(k=>{
-
-if(!k.startsWith("diary-")) return;
-
-const d=JSON.parse(localStorage.getItem(k));
-
-if(d.content.includes(q)){
-
-const div=document.createElement("div");
-div.innerText=k+" "+d.content.slice(0,20);
-
-res.appendChild(div);
-
-}
-
-});
-
-}
-
-document.getElementById("search").addEventListener("input",renderSearch);
-
-function randomDiary(){
-
-const keys=Object.keys(localStorage).filter(k=>k.startsWith("diary-"));
-
-if(!keys.length) return;
-
-const r=keys[Math.floor(Math.random()*keys.length)];
-
-const d=JSON.parse(localStorage.getItem(r));
-
-document.getElementById("random").innerText=d.content;
-
-}
-
-function download(){
-
-const data=JSON.stringify(localStorage);
-
-const a=document.createElement("a");
-
-a.href="data:text/json;charset=utf-8,"+encodeURIComponent(data);
-
-a.download="diary-backup.json";
-
-a.click();
-
-}
-
-document.getElementById("upload").addEventListener("change",e=>{
-
-const file=e.target.files[0];
-
-const r=new FileReader();
-
-r.onload=function(ev){
-
-const data=JSON.parse(ev.target.result);
-
-for(let k in data) localStorage.setItem(k,data[k]);
-
-renderAll();
-
-}
-
-r.readAsText(file);
-
-});
-
-function toggleDark(){
-document.body.classList.toggle("dark");
-}
-
-function renderAll(){
-renderHeatmap();
-renderGallery();
-renderChart();
-}
-
-renderAll();
+loadEntries()
 
 </script>
 
