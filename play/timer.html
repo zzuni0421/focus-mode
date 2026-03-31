@@ -167,7 +167,7 @@ transform:scale(0.95);
 </div>
 
 </div>
-
+<audio id="alarm" src="alarm.mp3"></audio>
 <script>
 
 let total=0;
@@ -227,7 +227,7 @@ localStorage.setItem("timer-time",total);
 
 if(total<=0){
 
-playAlarm();
+document.getElementById("alarm").play();
 clearInterval(timer);
 timer=null;
 alert("⏰ 타이머 종료!");
@@ -257,25 +257,6 @@ total=parseInt(saved);
 update();
 }
 
-function playAlarm(){
-
-const audio = new AudioContext();
-const oscillator = audio.createOscillator();
-const gain = audio.createGain();
-
-oscillator.connect(gain);
-gain.connect(audio.destination);
-
-oscillator.frequency.value = 880;
-oscillator.type = "sine";
-
-oscillator.start();
-
-setTimeout(()=>{
-oscillator.stop();
-},500);
-
-}
 </script>
 
 </body>
