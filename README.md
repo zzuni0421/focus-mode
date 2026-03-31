@@ -1,2 +1,4 @@
-# focus-mode
-쪼아요 쪼아요 집중하는거 쪼아요
+학교 과제용.
+
+focusnamul.pages.dev
+
