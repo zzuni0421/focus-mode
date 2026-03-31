@@ -3,18 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Focus Stretch</title>
+<title>Stretch Break</title>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Pretendard,sans-serif;
-}
-
 body{
+margin:0;
+font-family:Pretendard,sans-serif;
 background:linear-gradient(135deg,#ffb6d9,#ffd6ec,#ffeaf5);
 height:100vh;
 display:flex;
@@ -23,8 +18,8 @@ align-items:center;
 }
 
 .container{
-background:rgba(255,255,255,0.7);
-backdrop-filter:blur(12px);
+background:rgba(255,255,255,0.8);
+backdrop-filter:blur(10px);
 padding:40px;
 border-radius:28px;
 box-shadow:0 15px 40px rgba(255,120,170,0.25);
@@ -38,7 +33,6 @@ margin-bottom:20px;
 }
 
 .stage{
-font-size:14px;
 color:#888;
 margin-bottom:10px;
 }
@@ -46,19 +40,19 @@ margin-bottom:10px;
 .name{
 font-size:24px;
 font-weight:bold;
-margin-bottom:15px;
+margin-bottom:20px;
 color:#ff2d95;
 }
 
-.timer{
-font-size:40px;
-font-weight:bold;
-margin-bottom:15px;
+.icon{
+font-size:80px;
+margin-bottom:20px;
+animation:move 2s infinite ease-in-out;
 }
 
-img{
-width:220px;
-border-radius:15px;
+.timer{
+font-size:42px;
+font-weight:bold;
 margin-bottom:20px;
 }
 
@@ -74,12 +68,18 @@ border:none;
 border-radius:14px;
 background:linear-gradient(135deg,#ff5cb8,#ff2d95);
 color:white;
-cursor:pointer;
 font-weight:600;
+cursor:pointer;
 }
 
 button:hover{
 transform:scale(1.05);
+}
+
+@keyframes move{
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
 }
 
 </style>
@@ -95,7 +95,7 @@ transform:scale(1.05);
 
 <div class="name" id="name"></div>
 
-<img id="gif">
+<div class="icon" id="icon"></div>
 
 <div class="timer" id="timer"></div>
 
@@ -110,37 +110,11 @@ transform:scale(1.05);
 <script>
 
 const stretches=[
-
-{
-name:"목 스트레칭",
-gif:"https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
-time:15
-},
-
-{
-name:"어깨 돌리기",
-gif:"https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-time:15
-},
-
-{
-name:"허리 스트레칭",
-gif:"https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif",
-time:15
-},
-
-{
-name:"손목 스트레칭",
-gif:"https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
-time:15
-},
-
-{
-name:"기지개 켜기",
-gif:"https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif",
-time:15
-}
-
+{name:"목 스트레칭",icon:"🙆‍♂️",time:10},
+{name:"어깨 돌리기",icon:"💪",time:10},
+{name:"허리 스트레칭",icon:"🧍",time:10},
+{name:"손목 스트레칭",icon:"✋",time:10},
+{name:"기지개 켜기",icon:"🙌",time:10}
 ]
 
 let index=0
@@ -155,7 +129,7 @@ document.getElementById("stage").innerText=`${index+1} / ${stretches.length}`
 
 document.getElementById("name").innerText=s.name
 
-document.getElementById("gif").src=s.gif
+document.getElementById("icon").innerText=s.icon
 
 time=s.time
 
@@ -210,9 +184,7 @@ clearInterval(interval)
 function reset(){
 
 clearInterval(interval)
-
 index=0
-
 load()
 
 }
