@@ -9,7 +9,3 @@ function goTimer(){
 function goStopwatch(){
     window.location.href = "play/stopwatch.html";
 }
-
-function goStretch(){
-    window.location.href = "play/stretch.html";
-}
