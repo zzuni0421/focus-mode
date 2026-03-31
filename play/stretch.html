@@ -2,186 +2,222 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>스트레칭</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus Stretch</title>
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Pretendard,sans-serif;
+}
+
 body{
-font-family:sans-serif;
-background:#f5f7fb;
+background:linear-gradient(135deg,#ffb6d9,#ffd6ec,#ffeaf5);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.container{
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(12px);
+padding:40px;
+border-radius:28px;
+box-shadow:0 15px 40px rgba(255,120,170,0.25);
 text-align:center;
-padding:60px;
+width:420px;
 }
 
 h1{
-font-size:32px;
+color:#ff2d95;
+margin-bottom:20px;
+}
+
+.stage{
+font-size:14px;
+color:#888;
 margin-bottom:10px;
 }
 
-#stretchName{
-font-size:26px;
-margin-top:20px;
+.name{
+font-size:24px;
 font-weight:bold;
+margin-bottom:15px;
+color:#ff2d95;
 }
 
-#desc{
-margin-top:10px;
-color:#555;
-}
-
-#timer{
+.timer{
 font-size:40px;
-margin-top:10px;
+font-weight:bold;
+margin-bottom:15px;
 }
 
 img{
-width:250px;
-margin-top:20px;
-border-radius:10px;
+width:220px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+justify-content:center;
 }
 
 button{
-margin-top:20px;
-padding:12px 24px;
-font-size:16px;
+padding:10px 18px;
 border:none;
-border-radius:8px;
-background:#4caf50;
+border-radius:14px;
+background:linear-gradient(135deg,#ff5cb8,#ff2d95);
 color:white;
 cursor:pointer;
-margin-right:10px;
+font-weight:600;
 }
 
 button:hover{
-opacity:0.9;
+transform:scale(1.05);
 }
 
 </style>
 </head>
+
 <body>
 
-<h1>🧘 스트레칭 루틴</h1>
-<p>잠시 컴퓨터나 핸드폰에서 눈을 떼고 따라하세요</p>
+<div class="container">
 
-<div id="stretchName"></div>
-<div id="desc"></div>
+<h1>🧘 스트레칭</h1>
 
-<img id="stretchGif">
+<div class="stage" id="stage"></div>
 
-<div id="timer">10</div>
+<div class="name" id="name"></div>
 
-<br>
+<img id="gif">
 
-<button onclick="startRoutine()">시작</button>
-<button onclick="pauseRoutine()">일시정지</button>
+<div class="timer" id="timer"></div>
+
+<div class="buttons">
+<button onclick="start()">시작</button>
+<button onclick="pause()">정지</button>
+<button onclick="reset()">리셋</button>
+</div>
+
+</div>
 
 <script>
 
-const stretches = [
+const stretches=[
 
 {
 name:"목 스트레칭",
-desc:"목을 천천히 좌우로 돌리기",
-gif:"https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif"
+gif:"https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
+time:15
 },
 
 {
-name:"어깨 스트레칭",
-desc:"어깨 크게 돌리기",
-gif:"https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif"
+name:"어깨 돌리기",
+gif:"https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+time:15
 },
 
 {
 name:"허리 스트레칭",
-desc:"자리에서 일어나 허리 펴기",
-gif:"https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif"
+gif:"https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif",
+time:15
 },
 
 {
 name:"손목 스트레칭",
-desc:"손목 천천히 돌리기",
-gif:"https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif"
+gif:"https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
+time:15
 },
 
 {
-name:"기지개",
-desc:"팔을 위로 올리고 기지개 켜기",
-gif:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-},
-
-{
-name:"눈 휴식",
-desc:"눈을 감고 잠시 쉬세요",
-gif:"https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
+name:"기지개 켜기",
+gif:"https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif",
+time:15
 }
 
-];
+]
 
-let current = 0;
-let time = 10;
-let interval;
+let index=0
+let time=0
+let interval
 
-function showStretch(){
+function load(){
 
-const s = stretches[current];
+const s=stretches[index]
 
-document.getElementById("stretchName").innerText = s.name;
-document.getElementById("desc").innerText = s.desc;
-document.getElementById("stretchGif").src = s.gif;
+document.getElementById("stage").innerText=`${index+1} / ${stretches.length}`
 
-time = 10;
+document.getElementById("name").innerText=s.name
 
-updateTimer();
+document.getElementById("gif").src=s.gif
+
+time=s.time
+
+update()
 
 }
 
-function updateTimer(){
+function update(){
 
-document.getElementById("timer").innerText = time;
-
-}
-
-function nextStretch(){
-
-current++;
-
-if(current >= stretches.length){
-
-current = 0; // 루틴 반복
+document.getElementById("timer").innerText=time+"s"
 
 }
 
-showStretch();
+function start(){
+
+clearInterval(interval)
+
+interval=setInterval(()=>{
+
+time--
+
+update()
+
+if(time<=0){
+
+index++
+
+if(index>=stretches.length){
+
+alert("스트레칭 완료!")
+
+clearInterval(interval)
+
+return
 
 }
 
-function startRoutine(){
-
-clearInterval(interval);
-
-interval = setInterval(()=>{
-
-time--;
-
-updateTimer();
-
-if(time <= 0){
-
-nextStretch();
+load()
 
 }
 
-},1000);
+},1000)
 
 }
 
-function pauseRoutine(){
+function pause(){
 
-clearInterval(interval);
+clearInterval(interval)
 
 }
 
-showStretch();
+function reset(){
+
+clearInterval(interval)
+
+index=0
+
+load()
+
+}
+
+load()
 
 </script>
 
